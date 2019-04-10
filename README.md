@@ -9,6 +9,25 @@ The way to learn electron.
 ##### 区别与联系
  - 主进程使用 BrowserWindow 实例创建网页。每个 BrowserWindow 实例都在自己的渲染进程里运行着一个网页。当一个 BrowserWindow 实例被销毁后，相应的渲染进程也会被终止。
  - 如果你想在网页里使用 GUI 操作，其对应的渲染进程必须与主进程进行通讯，请求主进程进行相关的 GUI 操作。
+ ##### 通信
+ - 主进程：ipcMain；
+ - 渲染器进程：ipcRenderer；
+ - 发送和接收：
+ ```
+ // 主进程中的方法
+ ipcMain.on(事件名称-channel, listener);
+ ipcMain.once(事件名称-channel, listener);  // 只监听一次
+ // 回复同步信息时，需要设置 event.returnValue;
+ ipMain.on(synchronousChannel, (event, arg) => {
+   console.log(arg);
+   event.returnValue = '我收到啦'
+ })
+ // 如果收到异步消息时，需要给发送人发送异步消息，需要使用 event.sender.send(...)
+ ipMain.on(asynchronous, (event, arg) => {
+   console.log(arg);
+   event.sender.send(asynchronous-Reply, arg)
+ })
+ ```
 
 ### 设置工具栏
 - 设置缩略图工具栏，其中 icon 为必填属性；
